@@ -502,7 +502,7 @@ export default function Home() {
       </header>
       <div className="workspace-heading">
         <div>
-          <p className="eyebrow">THE CONNECTED ORDER</p>
+          <p className="eyebrow">캠퍼스링크 · 매장 주문</p>
           <h1>
             웹 주문부터 매장 접수까지<span>.</span>
           </h1>
@@ -695,11 +695,11 @@ export default function Home() {
                     <div className="hero-shade" />
                     <div className="table-chip">TABLE 05</div>
                     <div className="restaurant-name">
-                      <p>PASTA & GOOD COMPANY</p>
+                      <p>이탈리아 음식 · 대학 제휴 매장</p>
                       <h2>{selectedStore}</h2>
                       <span>
                         <span className="green-dot" />
-                        주문 가능 · 이탈리안 키친
+                        영업 중 · 테이블 5에서 주문
                       </span>
                     </div>
                   </div>

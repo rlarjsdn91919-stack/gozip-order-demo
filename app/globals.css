@@ -2271,3 +2271,587 @@ h1 > span {
   opacity: 0.6;
   cursor: wait;
 }
+
+/* Place-detail theme: white surfaces, green actions, compact information rows. */
+:root,
+.dark {
+  --background: #f4f5f7;
+  --foreground: #242424;
+  --card: #fff;
+  --primary: #008f45;
+  --primary-foreground: #fff;
+  --muted: #f1f3f5;
+  --muted-foreground: #70757a;
+  --accent: #edf9f1;
+  --border: #e5e7eb;
+  --lime: #03c75a;
+  --navy: #fff;
+  --dim: #767b80;
+  --color-ring: #008f45;
+}
+body {
+  font-family:
+    'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', sans-serif;
+}
+button:focus-visible,
+a:focus-visible {
+  outline-color: #008f45;
+}
+.masthead {
+  height: 76px;
+}
+.brand-icon {
+  color: #fff;
+  border-radius: 9px;
+}
+.wordmark {
+  color: #202020;
+  letter-spacing: -0.7px;
+}
+.demo-badge {
+  color: #008b40;
+  background: #effaf3;
+  border-color: #d9eee1;
+  letter-spacing: 0.5px;
+}
+.demo-badge > span,
+.context-dot,
+.activity-dot.latest {
+  background: #03c75a;
+}
+.workspace-heading {
+  padding: 26px 0 22px;
+}
+.eyebrow {
+  color: #008f45;
+  letter-spacing: 0;
+  font-size: 14px;
+}
+h1 {
+  font-size: 28px;
+  letter-spacing: -1px;
+}
+h1 > span {
+  color: #03c75a;
+}
+.journey {
+  border-radius: 8px;
+  border-color: #e7e9ec;
+  box-shadow: 0 1px 2px #00000003;
+}
+.journey-step.active .step-number {
+  background: #03c75a;
+  color: #fff;
+}
+.journey-step.done .step-number {
+  background: #e8f8ed;
+  color: #008f45;
+}
+.phone-frame {
+  border-radius: 20px;
+  border-color: #dfe3e7;
+  box-shadow: 0 6px 24px #00000008;
+}
+.phone-status {
+  color: #242424;
+}
+.browser-bar {
+  background: #f7f8fa;
+  border-color: #edf0f2;
+}
+.restaurant-hero {
+  height: auto;
+  background: #fff;
+  border-bottom: 8px solid #f3f5f7;
+}
+.restaurant-hero > img {
+  height: 156px;
+  display: block;
+  object-position: 50% 68%;
+}
+.restaurant-hero .hero-shade {
+  display: none;
+}
+.restaurant-name {
+  position: static;
+  color: #242424;
+  padding: 17px 20px 19px;
+}
+.restaurant-name p {
+  color: #767b80;
+  letter-spacing: 0;
+  font-size: 13px;
+  font-weight: 400;
+}
+.restaurant-name h2 {
+  color: #242424;
+  font-size: 24px;
+  margin: 4px 0 8px;
+}
+.restaurant-name > span {
+  color: #008f45;
+  font-size: 14px;
+}
+.table-chip {
+  color: #fff;
+  background: #202020b8;
+  border: 0;
+  border-radius: 4px;
+}
+.menu-body {
+  padding: 16px 20px;
+}
+.benefit-banner,
+.connected-banner {
+  background: #effaf3;
+  border-color: #d5efdf;
+  border-radius: 8px;
+}
+.benefit-banner:hover {
+  background: #e3f6eb;
+}
+.benefit-icon {
+  background: #dcf4e6;
+  color: #008f45;
+  border-radius: 50%;
+}
+.benefit-banner small,
+.benefit-banner > svg,
+.connected-banner small,
+.connected-banner > svg {
+  color: #008f45;
+}
+.menu-tabs {
+  gap: 25px !important;
+  margin-top: 20px;
+}
+.menu-tabs [data-slot='tabs-trigger'] {
+  font-size: 16px;
+}
+.menu-tabs [data-slot='tabs-trigger'][data-active] {
+  color: #008f45;
+}
+.menu-tabs [data-slot='tabs-trigger']:after {
+  background: #03c75a;
+  height: 3px;
+}
+.menu-item {
+  padding: 22px 0;
+}
+.menu-title h3 {
+  font-weight: 700;
+}
+.menu-item p {
+  font-size: 14px;
+  color: #767676;
+}
+.menu-item strong {
+  font-size: 16px;
+  color: #242424;
+}
+.best-tag {
+  color: #ef6653;
+  background: #fff1ed;
+  font-size: 12px;
+}
+.quantity-control button {
+  border-radius: 50%;
+  color: #008f45;
+  width: 30px;
+  height: 30px;
+}
+.quantity-control button:hover {
+  background: #eefaf3;
+}
+.menu-quantity > img {
+  border-radius: 6px;
+}
+.primary-button,
+.pos-primary {
+  color: #fff;
+  background: #008f45;
+  border-radius: 6px;
+  font-weight: 700;
+}
+.primary-button:hover:not(:disabled),
+.pos-primary:hover {
+  background: #007a3b;
+}
+.primary-button b {
+  background: #fff;
+  color: #008f45;
+  border-radius: 50%;
+}
+.tag-card > svg,
+.revisit-shortcut {
+  color: #008f45;
+}
+.tag-content h2 {
+  color: #242424;
+}
+.phone-footer {
+  box-shadow: 0 -3px 12px #00000004;
+}
+.app-mode,
+.app-mode .phone-status,
+.app-mode .phone-footer {
+  background: #fff;
+  color: #242424;
+  border-color: #e5e7eb;
+}
+.app-mode .island {
+  background: #242424;
+}
+.app-mode .home-indicator {
+  background: #242424;
+}
+.app-topbar {
+  border-color: #e5e7eb;
+  background: #fff;
+}
+.app-topbar > button {
+  color: #424242;
+}
+.app-demo-label {
+  background: #eef8f2;
+  color: #008f45;
+}
+.auth-screen {
+  padding: 20px 23px 28px;
+}
+.auth-context {
+  color: #70757a;
+  background: #f6f7f9;
+  padding: 10px;
+  border-radius: 6px;
+  margin-bottom: 24px;
+}
+.auth-symbol {
+  background: #ecfaf1;
+  border-color: #d9f0e2;
+  color: #008f45;
+  border-radius: 18px;
+}
+.auth-screen h2 {
+  color: #242424;
+  font-size: 27px;
+}
+.auth-eyebrow {
+  color: #008f45;
+  letter-spacing: 0.6px;
+}
+.auth-description {
+  color: #6b7075;
+  font-size: 15px;
+}
+.signup-summary,
+.student-proof,
+.member-card,
+.university-card,
+.return-card {
+  background: #fff;
+  border-color: #e2e6e9;
+  border-radius: 8px;
+}
+.signup-summary {
+  color: #424242;
+  background: #f7f9fa;
+}
+.signup-summary b {
+  color: #008f45;
+}
+.signup-steps li {
+  color: #888;
+}
+.signup-steps li > span {
+  border-color: #d5d9dd;
+}
+.signup-steps .reached {
+  color: #008f45;
+}
+.signup-steps .reached > span {
+  color: #fff;
+  background: #008f45;
+  border-color: #008f45;
+}
+.signup-fields label {
+  color: #424242;
+}
+.signup-fields input {
+  background: #fafbfc;
+  color: #303030;
+  border-color: #dfe3e7;
+  border-radius: 6px;
+}
+.signup-secondary {
+  color: #008f45;
+  background: #effaf4;
+  border-color: #c8ead6;
+  border-radius: 6px;
+}
+.proof-title,
+.student-proof dd {
+  color: #242424;
+}
+.student-proof p,
+.student-proof dt,
+.verification-status {
+  color: #70757a;
+}
+.verification-status.verified {
+  color: #008f45;
+}
+.verification-status.rejected {
+  color: #c94239;
+}
+.school-badge {
+  color: #008f45;
+  background: #e8f8ef;
+}
+.consent-row {
+  color: #424242;
+  font-size: 14px;
+}
+.consent-row small {
+  color: #767b80;
+  line-height: 1.6;
+}
+.consent-row [data-slot='checkbox'] {
+  background: #fff;
+  border-color: #b7bec4;
+}
+.consent-row [data-slot='checkbox'][data-checked] {
+  background: #008f45;
+  border-color: #008f45;
+  color: #fff;
+}
+.auth-cancel {
+  color: #70757a;
+  font-size: 14px;
+}
+.auth-cancel:hover {
+  color: #008f45;
+}
+.member-avatar {
+  background: #e5f6ed;
+  color: #008f45;
+}
+.member-card p,
+.member-card strong > span,
+.university-card div > span,
+.return-card span,
+.return-card small,
+.simulation-caption,
+.auth-bottom-brand,
+.app-mode .phone-footer-note {
+  color: #70757a;
+}
+.member-card > svg,
+.university-card > svg,
+.faceid-symbol,
+.return-card > svg {
+  color: #008f45;
+}
+.approved-symbol {
+  background: #03c75a;
+  color: #fff;
+  box-shadow: 0 0 0 10px #eefaf3;
+}
+.return-card {
+  background: #f8faf9;
+}
+.return-card small {
+  color: #008f45;
+}
+.inline-notice,
+.visit-destination {
+  background: #effaf4;
+  color: #008f45;
+  border-radius: 6px;
+}
+.drink-box {
+  background: #f7faf8;
+  border-color: #e1ece5;
+  border-radius: 8px;
+}
+.drink-heading,
+.drink-heading > span,
+.drink-option b {
+  color: #008f45;
+}
+.drink-option {
+  border-color: #e2e6e9;
+  border-radius: 6px;
+}
+.drink-option.selected {
+  border-color: #03c75a;
+  background: #effaf4;
+}
+.drink-option [data-slot='radio-group-item'] {
+  color: #008f45;
+  border-color: #a3c6b1;
+}
+.drink-box > p,
+.eligibility-note {
+  color: #70757a;
+}
+.pos-frame {
+  color: #242424;
+  border-color: #dfe3e7;
+  border-radius: 12px;
+  box-shadow: 0 6px 24px #00000006;
+}
+.pos-topbar {
+  background: #fff;
+  color: #70757a;
+  border-color: #e5e7eb;
+}
+.pos-brand {
+  color: #242424;
+}
+.pos-brand > span,
+.pos-count strong {
+  color: #008f45;
+}
+.pos-divider {
+  background: #dfe3e7;
+}
+.online {
+  color: #008f45;
+}
+.pos-title p,
+.pos-count > span {
+  color: #767b80;
+}
+.pos-filter {
+  border-color: #e5e7eb;
+}
+.pos-filter [data-slot='tabs-trigger'] {
+  color: #70757a;
+}
+.pos-filter [data-slot='tabs-trigger'][data-active] {
+  color: #008f45;
+  font-weight: 700;
+}
+.pos-filter [data-slot='tabs-trigger'] b {
+  background: #f0f3f5;
+  color: #70757a;
+}
+.pos-filter [data-slot='tabs-trigger'][data-active] b {
+  color: #008f45;
+  background: #e6f7ed;
+}
+.empty-icon {
+  background: #f5f7f8;
+  border-color: #e7ebee;
+  color: #a0a9af;
+}
+.pulse-dot {
+  box-shadow: 0 0 0 4px #fff;
+}
+.pos-empty-title,
+.pos-empty h3 {
+  color: #50565c;
+}
+.pos-empty-description,
+.pos-empty p,
+.pos-bottom {
+  color: #767b80;
+}
+.pos-bottom {
+  border-color: #e5e7eb;
+}
+.pos-bottom > svg {
+  color: #008f45;
+}
+.pos-order-card {
+  background: #fff;
+  border-color: #dfe5e2;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px #00000003;
+}
+.order-card-heading > div > span,
+.order-card-items > div > span:nth-child(2),
+.order-card-total {
+  color: #70757a;
+}
+.order-card-items > div,
+.order-card-total strong {
+  color: #242424;
+}
+.order-card-items small,
+.order-card-items .pos-free-item,
+.order-card-items .pos-free-item strong,
+.order-final {
+  color: #008f45;
+}
+.order-badge.benefit {
+  color: #008f45;
+  background: #edf9f1;
+  border-color: #d2eedc;
+}
+.order-badge.normal {
+  background: #f1f4f7;
+  color: #70757a;
+}
+.order-card-total {
+  border-color: #e0e5e7;
+}
+.pos-reject {
+  color: #70757a;
+  border-color: #dfe3e7;
+}
+.pos-reject:hover,
+.order-final.cancelled {
+  color: #c94239;
+}
+.pos-order-note {
+  color: #50565c;
+  background: #f5f7f9;
+}
+.flow-note {
+  background: #fff;
+  border-radius: 8px;
+}
+.receipt-symbol {
+  color: #008f45;
+  background: #eaf8f0;
+}
+.receipt-progress > span.complete,
+.receipt-line small,
+.free-line {
+  color: #008f45;
+}
+.receipt-paper {
+  background: #fff;
+  border-radius: 8px;
+}
+.checkout-benefit {
+  background: #effaf4;
+  color: #008f45;
+  border-color: #d5efdf;
+}
+.checkout-dialog {
+  border-radius: 12px !important;
+}
+.checkout-dialog textarea {
+  outline-color: #03c75a;
+  border-radius: 6px;
+}
+.activity-dot {
+  background: #b8c6bf;
+}
+@media (max-width: 600px) {
+  .masthead {
+    height: 64px;
+  }
+  .workspace-heading {
+    padding: 22px 0 18px;
+  }
+  h1 {
+    font-size: 24px;
+  }
+  .phone-frame {
+    border-radius: 14px;
+  }
+}
