@@ -157,3 +157,28 @@ export function makeOrder(input: {
     note: input.note.trim().slice(0, 100),
   };
 }
+
+export function journeyStatus(
+  index: number,
+  stage: number,
+  connected: boolean,
+) {
+  if (index === 2 && stage === 4 && !connected) return 'skipped';
+  return index === stage ? 'active' : index < stage ? 'done' : 'upcoming';
+}
+export function orderDisplay(status: OrderStatus) {
+  return {
+    amountLabel:
+      status === 'cancelled' ? '취소된 주문 금액' : '매장 결제 예정 금액',
+    posAction:
+      status === 'new'
+        ? '매장 POS에서 접수하기'
+        : status === 'cooking'
+          ? '매장 POS에서 조리 확인'
+          : '매장 POS에서 내역 보기',
+    amountNote:
+      status === 'cancelled'
+        ? '취소된 주문으로, 결제할 금액이 없습니다.'
+        : '실제 결제 없이 주문 흐름만 체험합니다.',
+  };
+}

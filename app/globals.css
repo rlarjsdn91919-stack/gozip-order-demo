@@ -2107,3 +2107,30 @@ h1 > span {
     display: none;
   }
 }
+
+.journey-step.skipped {
+  color: #87939c;
+}
+.journey-step.skipped .step-number {
+  background: #eef1f4;
+  color: #a4afb8;
+}
+.step-skipped {
+  display: block;
+  font-size: 12px;
+  font-weight: 400;
+  color: #83909c;
+  line-height: 1.2;
+  margin-top: 3px;
+}
+.visit-destination {
+  padding: 12px;
+  border-radius: 9px;
+  background: #f0f5e7;
+  color: #61793e;
+  font-size: 14px;
+}
+.drink-option:has([data-disabled]) {
+  opacity: 0.6;
+  cursor: wait;
+}

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { makeOrder, validApproval, type Approval } from '../lib/demo.ts';
+import { journeyStatus, orderDisplay, makeOrder, validApproval, type Approval } from '../lib/demo.ts';
 const base = {
   cart: { tomato: 1 },
   connected: false,
@@ -99,4 +99,17 @@ void test('Different store visit reuses membership but requires its own connecti
   });
   assert.equal(approvedSecond.benefit, true);
   assert.equal(approvedSecond.id, '1002');
+});
+
+void test('Guest receipt skips affiliation approval instead of showing it complete', () => {
+  assert.equal(journeyStatus(2, 4, false), 'skipped');
+  assert.equal(journeyStatus(2, 4, true), 'done');
+  assert.equal(journeyStatus(3, 4, false), 'done');
+});
+void test('Cancelled and fulfilled receipts show the right amount meaning and POS action', () => {
+  assert.equal(orderDisplay('cancelled').amountLabel, '취소된 주문 금액');
+  assert.match(orderDisplay('cancelled').amountNote, /결제할 금액이 없습니다/);
+  assert.equal(orderDisplay('cancelled').posAction, '매장 POS에서 내역 보기');
+  assert.equal(orderDisplay('done').posAction, '매장 POS에서 내역 보기');
+  assert.equal(orderDisplay('new').posAction, '매장 POS에서 접수하기');
 });

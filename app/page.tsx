@@ -70,6 +70,8 @@ import {
   eligible,
   validApproval,
   makeOrder,
+  journeyStatus,
+  orderDisplay,
   type Cart,
   type Approval,
   type Order,
@@ -136,13 +138,15 @@ const notes = [
   ],
   [
     '서비스 메뉴까지, 하나의 주문으로.',
-    '매장에서 접수 → 조리 완료 → 제공 완료를 눌러보세요. 고객의 주문 상태도 함께 바뀝니다.',
+    '매장에서 접수 → 조리·제공 완료를 눌러보세요. 고객의 주문 상태도 함께 바뀝니다.',
   ],
 ];
 function DrinkChoice({
   drink,
   setDrink,
+  disabled = false,
 }: {
+  disabled?: boolean;
   drink: string;
   setDrink: (value: string) => void;
 }) {
@@ -168,7 +172,7 @@ function DrinkChoice({
               }
               key={id}
             >
-              <RadioGroupItem value={id} />
+              <RadioGroupItem value={id} disabled={disabled} />
               <span>{item.name}</span>
               <span>
                 <del>{won(item.price)}</del>
@@ -198,6 +202,10 @@ export default function Home() {
   const [checkout, setCheckout] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
+  const [pendingVisit, setPendingVisit] = useState<{
+    store: string;
+    browser: string;
+  } | null>(null);
   const [note, setNote] = useState('');
   const [orders, setOrders] = useState<Order[]>([]);
   const [currentOrderId, setCurrentOrderId] = useState('');
@@ -246,7 +254,19 @@ export default function Home() {
     }));
     setNotice('');
   }
+  function requestVisit(nextStore: string, nextBrowser: string) {
+    if (nextStore === store && nextBrowser === browser) return;
+    if (
+      phase !== 'receipt' &&
+      (itemCount(cart) > 0 || !!note.trim() || connected)
+    ) {
+      setPendingVisit({ store: nextStore, browser: nextBrowser });
+      return;
+    }
+    newVisit(nextStore, nextBrowser);
+  }
   function newVisit(nextStore = store, nextBrowser = browser, start = false) {
+    setPendingVisit(null);
     if (timer.current) clearTimeout(timer.current);
     setStore(nextStore);
     setBrowser(nextBrowser);
@@ -274,7 +294,7 @@ export default function Home() {
     setPhase('menu');
     setNotice('');
     log(
-      `${method}로 메뉴판을 열었어요`,
+      `${method}으로 메뉴판을 열었어요`,
       `${selectedStore} · 테이블 5 · ${browser}`,
     );
   }
@@ -456,18 +476,29 @@ export default function Home() {
           'NFC·QR 열기',
           '웹에서 메뉴 선택',
           '앱에서 제휴 연결',
-          '웹으로 돌아와 주문',
+          connected ? '웹으로 돌아와 주문' : '웹에서 주문 완료',
           'POS 접수·제공',
         ].map((label, i) => (
           <div
-            className={`journey-step ${i === stage ? 'active' : i < stage ? 'done' : ''}`}
+            className={`journey-step ${journeyStatus(i, stage, connected)}`}
             key={label}
             aria-current={i === stage ? 'step' : undefined}
           >
             <span className="step-number">
-              {i < stage ? <Check size={13} /> : <>0{i + 1}</>}
+              {journeyStatus(i, stage, connected) === 'skipped' ? (
+                <Minus size={13} />
+              ) : i < stage ? (
+                <Check size={13} />
+              ) : (
+                <>0{i + 1}</>
+              )}
             </span>
-            <span>{label}</span>
+            <span>
+              {label}
+              {journeyStatus(i, stage, connected) === 'skipped' && (
+                <small className="step-skipped">건너뜀</small>
+              )}
+            </span>
             {i < 4 && <ArrowRight size={15} />}
           </div>
         ))}
@@ -490,7 +521,9 @@ export default function Home() {
             <Select
               value={store}
               disabled={inApp || busy}
-              onValueChange={(v) => newVisit(String(v), browser)}
+              onValueChange={(v) => {
+                if (v !== null) requestVisit(String(v), browser);
+              }}
             >
               <SelectTrigger aria-label="데모 매장 선택">
                 <SelectValue>
@@ -508,7 +541,9 @@ export default function Home() {
             <Select
               value={browser}
               disabled={inApp || busy}
-              onValueChange={(v) => newVisit(store, String(v))}
+              onValueChange={(v) => {
+                if (v !== null) requestVisit(store, String(v));
+              }}
             >
               <SelectTrigger aria-label="브라우저 시뮬레이션">
                 <SelectValue />
@@ -654,7 +689,11 @@ export default function Home() {
                       <output className="inline-notice">{notice}</output>
                     )}
                     {benefitAvailable && (
-                      <DrinkChoice drink={drink} setDrink={setDrink} />
+                      <DrinkChoice
+                        drink={drink}
+                        setDrink={setDrink}
+                        disabled={busy}
+                      />
                     )}
                     {connected && !eligible(cart) && (
                       <p className="eligibility-note">
@@ -1038,15 +1077,17 @@ export default function Home() {
                       </div>
                     ))}
                     <div className="receipt-total">
-                      <span>매장 결제 예정 금액</span>
+                      <span>
+                        {orderDisplay(currentOrder.status).amountLabel}
+                      </span>
                       <strong>{won(currentOrder.total)}</strong>
                     </div>
-                    <p>실제 결제 없이 주문 흐름만 체험합니다.</p>
+                    <p>{orderDisplay(currentOrder.status).amountNote}</p>
                   </div>
                   <button
                     className="primary-button centered"
                     onClick={() =>
-                      newVisit(
+                      requestVisit(
                         String((Number(store) + 1) % 10),
                         browser === 'Chrome' ? 'Safari' : 'Chrome',
                       )
@@ -1064,7 +1105,7 @@ export default function Home() {
                     }
                   >
                     <Monitor size={17} />
-                    매장 POS에서 접수하기
+                    {orderDisplay(currentOrder.status).posAction}
                   </button>
                 </div>
               )}
@@ -1110,7 +1151,7 @@ export default function Home() {
             <button
               className="revisit-shortcut"
               onClick={() =>
-                newVisit(
+                requestVisit(
                   String((Number(store) + 1) % 10),
                   browser === 'Chrome' ? 'Safari' : 'Chrome',
                 )
@@ -1265,7 +1306,9 @@ export default function Home() {
                               </p>
                             )}
                             <div className="order-card-total">
-                              <span>매장 결제 예정</span>
+                              <span>
+                                {orderDisplay(order.status).amountLabel}
+                              </span>
                               <strong>{won(order.total)}</strong>
                             </div>
                             <div className="pos-order-actions">
@@ -1432,7 +1475,7 @@ export default function Home() {
               </button>
             )}
             {benefitAvailable && (
-              <DrinkChoice drink={drink} setDrink={setDrink} />
+              <DrinkChoice drink={drink} setDrink={setDrink} disabled={busy} />
             )}
             {connected && !eligible(cart) && (
               <p className="inline-notice">
@@ -1489,6 +1532,44 @@ export default function Home() {
           )}
         </DialogContent>
       </Dialog>
+      <AlertDialog
+        open={!!pendingVisit}
+        onOpenChange={(open) => {
+          if (!open) setPendingVisit(null);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogTitle className="dialog-title">
+            새 방문으로 이동할까요?
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            다른 매장·브라우저 체험을 시작하면 담아둔 메뉴 {itemCount(cart)}개와
+            요청사항, 이번 제휴 연결이 초기화됩니다. 기존 대학 인증과 접수된
+            주문은 유지됩니다.
+          </AlertDialogDescription>
+          {pendingVisit && (
+            <p className="visit-destination">
+              {STORES[Number(pendingVisit.store)]} · {pendingVisit.browser}
+            </p>
+          )}
+          <button
+            className="primary-button centered"
+            onClick={() => {
+              if (pendingVisit)
+                newVisit(pendingVisit.store, pendingVisit.browser);
+            }}
+          >
+            새 방문으로 이동
+            <ArrowRight size={17} />
+          </button>
+          <button
+            className="secondary-button centered"
+            onClick={() => setPendingVisit(null)}
+          >
+            현재 주문 유지하기
+          </button>
+        </AlertDialogContent>
+      </AlertDialog>
       <AlertDialog open={resetOpen} onOpenChange={setResetOpen}>
         <AlertDialogContent>
           <AlertDialogTitle className="dialog-title">
