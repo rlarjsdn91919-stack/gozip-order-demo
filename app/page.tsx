@@ -57,6 +57,11 @@ import {
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Checkbox } from '@/components/ui/checkbox';
 import {
+  InputOTP,
+  InputOTPGroup,
+  InputOTPSlot,
+} from '@/components/ui/input-otp';
+import {
   Empty,
   EmptyHeader,
   EmptyTitle,
@@ -128,8 +133,8 @@ const notes = [
     '앱 없이 메뉴를 보고 주문할 수 있습니다. 제휴를 원할 때만 연결 버튼을 누르세요.',
   ],
   [
-    '주문은 웹에서, 제휴 연결은 앱에서.',
-    '메뉴를 담은 뒤 제휴를 연결해보세요. 앱을 다녀와도 장바구니는 그대로 유지됩니다.',
+    '주문도 가입도 웹에서 이어져요.',
+    '메뉴를 담은 뒤 제휴를 연결해보세요. 회원가입 웹페이지를 다녀와도 장바구니는 그대로 유지됩니다.',
   ],
   [
     '한 번 인증한 대학 자격을 다시 사용해요.',
@@ -201,8 +206,8 @@ export default function Home() {
   const [request, setRequest] = useState<Approval | null>(null);
   const [drink, setDrink] = useState('');
   const [consent, setConsent] = useState(false);
-  const [terms, setTerms] = useState(false);
   const [phoneVerified, setPhoneVerified] = useState(false);
+  const [otp, setOtp] = useState('');
   const [studentCard, setStudentCard] = useState<
     'empty' | 'ready' | 'checking' | 'rejected' | 'verified'
   >('empty');
@@ -314,8 +319,8 @@ export default function Home() {
       setConnected(false);
       setDrink('');
     }
-    setTerms(false);
     setPhoneVerified(false);
+    setOtp('');
     setStudentCard('empty');
     setCheckout(false);
     setNotice('');
@@ -341,29 +346,30 @@ export default function Home() {
     setNotice('연결을 취소했어요. 담아둔 메뉴는 그대로예요.');
     log('제휴 연결을 취소했어요', '일반 주문은 계속할 수 있어요.');
   }
-  function checkStudentCard(reject = false) {
-    if (busy || studentCard !== 'ready' || !phoneVerified || !terms) return;
+  function checkStudentCard() {
+    if (busy) return;
     setBusy(true);
     setStudentCard('checking');
     timer.current = setTimeout(() => {
       setBusy(false);
-      setStudentCard(reject ? 'rejected' : 'verified');
+      setStudentCard('verified');
+      setPhase('signup');
       log(
-        reject ? '학생증을 다시 제출해주세요' : '학생증 인증을 완료했어요',
-        reject
-          ? '가상 인식 실패 · 재시도 가능'
-          : '이름·대학·재학 상태 일치 · 데모',
+        '학생증을 촬영하고 정보를 추출했어요',
+        '학교·캠퍼스·학번·이름 OCR 완료 · 데모',
       );
     }, 950);
   }
   function completeSignup() {
-    if (!canCompleteSignup(phoneVerified, terms, studentCard)) return;
+    if (!canCompleteSignup(phoneVerified, otp, studentCard)) return;
     writeMember(true);
-    setConsent(false);
-    setPhase('signupComplete');
+    setRequest((r) => (r ? { ...r, status: 'approved' } : r));
+    setConnected(true);
+    setPhase('menu');
+    setNotice('회원가입이 완료됐어요. 제휴가 연결된 메뉴판으로 돌아왔습니다.');
     log(
-      '학생증 인증 후 회원가입을 완료했어요',
-      '캠퍼스대학교 · 김캠퍼스 · 가상 회원',
+      '회원가입을 완료하고 메뉴판으로 돌아왔어요',
+      `${selectedStore} · 테이블 5 · 김캠퍼스 · 캠퍼스대학교`,
     );
   }
   function approve() {
@@ -517,7 +523,7 @@ export default function Home() {
         {[
           'NFC·QR 열기',
           '웹에서 메뉴 선택',
-          '앱에서 제휴 연결',
+          '웹에서 회원가입·연결',
           connected ? '웹으로 돌아와 주문' : '웹에서 주문 완료',
           'POS 접수·제공',
         ].map((label, i) => (
@@ -556,7 +562,7 @@ export default function Home() {
               고객 화면
             </span>
             <span className="caption">
-              {inApp ? 'APP AUTH SIMULATION' : 'WEB ORDER'}
+              {inApp ? 'WEB SIGNUP SIMULATION' : 'WEB ORDER'}
             </span>
           </div>
           <div className="scenario-controls">
@@ -620,7 +626,7 @@ export default function Home() {
                   <Link2 size={16} />
                   CAMPUS LINK
                 </span>
-                <span className="app-demo-label">앱 체험</span>
+                <span className="app-demo-label">회원가입 웹</span>
               </div>
             ) : (
               <div className="browser-bar">
@@ -725,7 +731,7 @@ export default function Home() {
                         </span>
                         <span>
                           <strong>대학생이라면, 음료 한 잔 무료</strong>
-                          <small>제휴 연결하기 · 앱에서 승인</small>
+                          <small>제휴 연결하기 · 웹에서 가입/승인</small>
                         </span>
                         <ArrowUpRight size={21} />
                       </button>
@@ -822,32 +828,25 @@ export default function Home() {
                   </div>
                   {phase === 'login' && (
                     <>
-                      <div className="auth-symbol">
-                        <GraduationCap size={36} />
-                      </div>
-                      <p className="auth-eyebrow">WELCOME TO CAMPUS LINK</p>
-                      <h2>
-                        처음 오셨나요?
-                        <br />
-                        학생 혜택을 시작하세요.
-                      </h2>
-                      <p className="auth-description">
-                        앱 회원가입과 학생증 인증을 마치면, 담아둔 웹 주문에
-                        제휴 혜택을 연결할 수 있어요.
-                      </p>
-                      <div className="signup-summary">
-                        <span>01 기본정보 · 휴대폰 확인</span>
+                      <div className="capture-viewfinder">
+                        {busy ? (
+                          <LoaderCircle className="spin" size={46} />
+                        ) : (
+                          <ScanLine size={54} />
+                        )}
                         <span>
-                          02 학생증 인증 <b>필수</b>
+                          {busy ? '학생증 인식 중' : '학생증 촬영 영역'}
                         </span>
-                        <span>03 가입 완료 · 제휴 연결</span>
                       </div>
+                      <h2 className="capture-title">학생증을 찍어주세요</h2>
                       <div className="auth-action">
                         <button
                           className="primary-button centered"
-                          onClick={() => setPhase('signup')}
+                          disabled={busy}
+                          onClick={checkStudentCard}
                         >
-                          회원가입 시작하기 <ArrowRight size={18} />
+                          {busy ? '학교 정보를 읽고 있어요' : '학생증 촬영하기'}
+                          <ScanLine size={18} />
                         </button>
                         <button
                           className="auth-cancel"
@@ -862,9 +861,6 @@ export default function Home() {
                         >
                           이미 인증된 데모 회원으로 로그인
                         </button>
-                        <button className="auth-cancel" onClick={cancelAuth}>
-                          가입하지 않고 웹 주문 계속하기
-                        </button>
                       </div>
                     </>
                   )}
@@ -876,7 +872,7 @@ export default function Home() {
                         className="signup-steps"
                         aria-label="회원가입 진행 단계"
                       >
-                        {['기본정보', '학생증 인증', '가입 완료'].map(
+                        {['학생증 OCR', 'SMS 인증', '완료'].map(
                           (label, index) => {
                             const current =
                               phase === 'signup'
@@ -907,198 +903,112 @@ export default function Home() {
                       </ol>
                       {phase === 'signup' && (
                         <>
-                          <p className="auth-eyebrow">
-                            STEP 01 · CREATE ACCOUNT
-                          </p>
-                          <h2>내 계정을 만들어요.</h2>
+                          <p className="auth-eyebrow">학생증 OCR 완료</p>
+                          <h2>학교 정보를 확인해주세요</h2>
                           <p className="auth-description">
-                            체험용 정보가 준비되어 있어요. 실제
-                            이름·연락처·비밀번호는 입력하지 않아요.
+                            촬영한 학생증에서 자동으로 읽은 정보예요.
                           </p>
-                          <div className="signup-fields">
-                            <label>
-                              이름
-                              <input readOnly value="김캠퍼스" />
-                            </label>
-                            <label>
-                              이메일
-                              <input readOnly value="campus@example.com" />
-                            </label>
-                            <label>
-                              비밀번호
-                              <input
-                                readOnly
-                                type="password"
-                                value="DemoOnly123!"
-                              />
-                            </label>
-                            <label>
-                              휴대폰 번호
-                              <input
-                                readOnly
-                                value="010-0000-0000 (가상 번호)"
-                              />
-                            </label>
+                          <div className="ocr-result">
+                            <div>
+                              <span>학교</span>
+                              <strong>한양대학교</strong>
+                            </div>
+                            <div>
+                              <span>캠퍼스</span>
+                              <strong>ERICA캠퍼스</strong>
+                            </div>
+                            <div>
+                              <span>학번</span>
+                              <strong>2026••••</strong>
+                            </div>
+                            <div>
+                              <span>이름</span>
+                              <strong>김캠퍼스</strong>
+                            </div>
                           </div>
-                          <button
-                            className="signup-secondary"
-                            disabled={phoneVerified}
-                            onClick={() => {
-                              setPhoneVerified(true);
-                              log(
-                                '휴대폰 본인확인을 체험했어요',
-                                '실제 문자 발송 없이 가상 번호 확인',
-                              );
-                            }}
-                          >
-                            {phoneVerified ? (
-                              <>
-                                <CircleCheck size={17} /> 휴대폰 확인 완료
-                              </>
-                            ) : (
-                              '휴대폰 본인확인 체험'
-                            )}
-                          </button>
-                          <label className="consent-row" htmlFor="signup-terms">
-                            <Checkbox
-                              id="signup-terms"
-                              checked={terms}
-                              onCheckedChange={(v) => setTerms(v === true)}
-                            />
-                            <span>
-                              [필수] 이용약관 및 개인정보 처리 동의 체험
-                              <small>
-                                실제 약관 동의·개인정보 수집은 발생하지
-                                않습니다.
-                              </small>
-                            </span>
-                          </label>
                           <div className="auth-action">
                             <button
                               className="primary-button centered"
-                              disabled={!phoneVerified || !terms}
                               onClick={() => setPhase('verify')}
                             >
-                              다음 · 학생증 인증 <ArrowRight size={18} />
+                              맞아요 · 전화번호 인증 <ArrowRight size={18} />
                             </button>
                             <button
                               className="auth-cancel"
-                              onClick={cancelAuth}
+                              onClick={() => setPhase('login')}
                             >
-                              가입 취소하고 웹으로 돌아가기
+                              다시 촬영하기
                             </button>
                           </div>
                         </>
                       )}
                       {phase === 'verify' && (
                         <>
-                          <p className="auth-eyebrow">
-                            STEP 02 · REQUIRED VERIFICATION
-                          </p>
-                          <h2>
-                            학생증 인증은
-                            <br />꼭 필요해요.
-                          </h2>
+                          <p className="auth-eyebrow">휴대폰 본인확인</p>
+                          <h2>인증번호 6자리를 입력해주세요</h2>
                           <p className="auth-description">
-                            이름·학교·재학 상태를 확인한 뒤 가입이 완료됩니다.
-                            아래 가상 학생증으로 제출 절차를 체험하세요.
+                            010-1234-5678로 보낸 번호를 자동으로 채울 수 있어요.
                           </p>
-                          <div className="student-proof">
-                            <div className="proof-title">
-                              <GraduationCap size={22} />
-                              <strong>학생증 제출</strong>
-                              <span className="school-badge">필수</span>
-                            </div>
-                            {studentCard === 'empty' ? (
-                              <p>
-                                실물·모바일 학생증 제출을 가상 자료로
-                                체험합니다. 실제 학생증을 올리지 마세요.
-                              </p>
-                            ) : (
-                              <dl>
-                                <div>
-                                  <dt>학교</dt>
-                                  <dd>캠퍼스대학교</dd>
-                                </div>
-                                <div>
-                                  <dt>이름</dt>
-                                  <dd>김캠퍼스</dd>
-                                </div>
-                                <div>
-                                  <dt>학번</dt>
-                                  <dd>2026•••• · 가상 정보</dd>
-                                </div>
-                                <div>
-                                  <dt>제출 자료</dt>
-                                  <dd>데모 학생증 샘플</dd>
-                                </div>
-                              </dl>
-                            )}
-                            {(studentCard === 'empty' ||
-                              studentCard === 'rejected') && (
-                              <button
-                                className="signup-secondary"
-                                onClick={() => setStudentCard('ready')}
-                              >
-                                <ScanLine size={17} />
-                                {studentCard === 'rejected'
-                                  ? '샘플 학생증 다시 제출'
-                                  : '샘플 학생증 제출하기'}
-                              </button>
-                            )}
+                          <div className="phone-entry">
+                            <span>전화번호</span>
+                            <strong>010-1234-5678</strong>
+                            <CircleCheck size={19} />
                           </div>
-                          <output
-                            className={'verification-status ' + studentCard}
+                          <InputOTP
+                            maxLength={6}
+                            value={otp}
+                            onChange={setOtp}
+                            inputMode="numeric"
+                            autoComplete="one-time-code"
+                            aria-label="SMS 인증번호 6자리"
+                            containerClassName="otp-input"
                           >
-                            {studentCard === 'empty' &&
-                              '학생증 미제출 · 가입을 완료할 수 없어요.'}
-                            {studentCard === 'ready' &&
-                              '제출 준비 완료 · 아래에서 인증을 진행해주세요.'}
-                            {studentCard === 'checking' && (
+                            <InputOTPGroup>
+                              {[0, 1, 2, 3, 4, 5].map((index) => (
+                                <InputOTPSlot key={index} index={index} />
+                              ))}
+                            </InputOTPGroup>
+                          </InputOTP>
+                          <button
+                            className="signup-secondary"
+                            disabled={phoneVerified}
+                            onClick={() => {
+                              setPhoneVerified(true);
+                              setOtp('123456');
+                              log(
+                                'SMS 인증번호를 자동으로 입력했어요',
+                                '가상 번호 · 실제 문자 발송 없음',
+                              );
+                            }}
+                          >
+                            {phoneVerified ? (
                               <>
-                                <LoaderCircle className="spin" size={17} />{' '}
-                                이름·학교·재학 상태를 확인하고 있어요.
+                                <CircleCheck size={17} /> 인증번호 자동완성 완료
                               </>
-                            )}
-                            {studentCard === 'rejected' &&
-                              '학생증의 글자를 읽을 수 없어요. 선명한 자료로 다시 제출해주세요. (실패 체험)'}
-                            {studentCard === 'verified' && (
-                              <>
-                                <ShieldCheck size={19} /> 이름 일치 ·
-                                캠퍼스대학교 재학생 인증 완료
-                              </>
-                            )}
-                          </output>
-                          <div className="auth-action">
-                            {studentCard === 'verified' ? (
-                              <button
-                                className="primary-button centered"
-                                onClick={completeSignup}
-                              >
-                                회원가입 완료하기 <Check size={18} />
-                              </button>
                             ) : (
-                              <button
-                                className="primary-button centered"
-                                disabled={busy || studentCard !== 'ready'}
-                                onClick={() => checkStudentCard()}
-                              >
-                                {busy ? '학생증 확인 중' : '학생증 인증하기'}
-                              </button>
+                              'SMS 인증번호 받기 · 자동완성 체험'
                             )}
-                            {studentCard === 'ready' && (
-                              <button
-                                className="auth-cancel"
-                                onClick={() => checkStudentCard(true)}
-                              >
-                                학생증 인식 실패 상황 체험
-                              </button>
-                            )}
+                          </button>
+                          <div className="auth-action">
+                            <button
+                              className="primary-button centered"
+                              disabled={
+                                !canCompleteSignup(
+                                  phoneVerified,
+                                  otp,
+                                  studentCard,
+                                )
+                              }
+                              onClick={completeSignup}
+                            >
+                              가입 완료하고 메뉴판으로 돌아가기{' '}
+                              <ArrowRight size={18} />
+                            </button>
                             <button
                               className="auth-cancel"
                               onClick={cancelAuth}
                             >
-                              가입 취소하고 웹으로 돌아가기
+                              취소하고 메뉴판으로 돌아가기
                             </button>
                           </div>
                         </>
@@ -1422,7 +1332,7 @@ export default function Home() {
               ) : (
                 <div className="phone-footer-note">
                   {inApp
-                    ? '앱에서 가입·학생증 인증·제휴 승인을 진행합니다.'
+                    ? 'CAMPUS LINK 회원가입 웹페이지입니다.'
                     : phase === 'receipt'
                       ? '주문은 웹에서 완료됐어요.'
                       : 'NFC·QR을 통해 웹 주문을 시작하세요.'}
@@ -1440,7 +1350,7 @@ export default function Home() {
           {!inApp && phase === 'menu' && (
             <button className="revisit-shortcut" onClick={() => openApp(true)}>
               <GraduationCap size={15} />
-              신규 회원가입부터 체험하기
+              웹 회원가입부터 체험하기
             </button>
           )}
           {member && !inApp && phase !== 'receipt' && (
@@ -1900,7 +1810,7 @@ export default function Home() {
             </li>
             <li>
               <Check size={17} />
-              회원가입·필수 학생증 인증과 재방문 생체승인
+              학생증 OCR·SMS 회원가입과 재방문 연결 승인
             </li>
             <li>
               <Check size={17} />앱 승인 후 원래 장바구니 복귀

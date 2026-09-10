@@ -185,8 +185,8 @@ export function orderDisplay(status: OrderStatus) {
 
 export function canCompleteSignup(
   phoneVerified: boolean,
-  termsAccepted: boolean,
+  otp: string,
   studentCard: string,
 ) {
-  return phoneVerified && termsAccepted && studentCard === 'verified';
+  return phoneVerified && otp.length === 6 && studentCard === 'verified';
 }

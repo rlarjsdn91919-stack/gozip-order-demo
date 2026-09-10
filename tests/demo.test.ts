@@ -123,8 +123,8 @@ void test('Cancelled and fulfilled receipts show the right amount meaning and PO
 
 void test('Signup cannot complete without successful student ID verification', () => {
   for (const status of ['empty', 'ready', 'checking', 'rejected'])
-    assert.equal(canCompleteSignup(true, true, status), false);
-  assert.equal(canCompleteSignup(false, true, 'verified'), false);
-  assert.equal(canCompleteSignup(true, false, 'verified'), false);
-  assert.equal(canCompleteSignup(true, true, 'verified'), true);
+    assert.equal(canCompleteSignup(true, '123456', status), false);
+  assert.equal(canCompleteSignup(false, '123456', 'verified'), false);
+  assert.equal(canCompleteSignup(true, '12345', 'verified'), false);
+  assert.equal(canCompleteSignup(true, '123456', 'verified'), true);
 });
