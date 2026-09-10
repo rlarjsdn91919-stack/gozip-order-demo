@@ -1,6 +1,13 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { journeyStatus, orderDisplay, makeOrder, validApproval, type Approval } from '../lib/demo.ts';
+import {
+  journeyStatus,
+  orderDisplay,
+  makeOrder,
+  validApproval,
+  canCompleteSignup,
+  type Approval,
+} from '../lib/demo.ts';
 const base = {
   cart: { tomato: 1 },
   connected: false,
@@ -112,4 +119,12 @@ void test('Cancelled and fulfilled receipts show the right amount meaning and PO
   assert.equal(orderDisplay('cancelled').posAction, '매장 POS에서 내역 보기');
   assert.equal(orderDisplay('done').posAction, '매장 POS에서 내역 보기');
   assert.equal(orderDisplay('new').posAction, '매장 POS에서 접수하기');
+});
+
+void test('Signup cannot complete without successful student ID verification', () => {
+  for (const status of ['empty', 'ready', 'checking', 'rejected'])
+    assert.equal(canCompleteSignup(true, true, status), false);
+  assert.equal(canCompleteSignup(false, true, 'verified'), false);
+  assert.equal(canCompleteSignup(true, false, 'verified'), false);
+  assert.equal(canCompleteSignup(true, true, 'verified'), true);
 });

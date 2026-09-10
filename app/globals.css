@@ -1188,6 +1188,143 @@ h1 > span {
   font-weight: 600;
   margin-bottom: 7px;
 }
+.signup-summary,
+.student-proof {
+  padding: 18px;
+  border: 1px solid #3c5262;
+  border-radius: 16px;
+  background: #203445;
+}
+.signup-summary {
+  display: grid;
+  gap: 16px;
+  font-size: 14px;
+  color: #d5e1eb;
+}
+.signup-summary b {
+  color: var(--lime);
+  margin-left: 8px;
+  font-size: 12px;
+}
+.signup-steps {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 0;
+  margin: 0 0 30px;
+  list-style: none;
+}
+.signup-steps li {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #8ea3b6;
+  font-size: 12px;
+}
+.signup-steps li > span {
+  width: 22px;
+  height: 22px;
+  border: 1px solid #4a6073;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.signup-steps .reached {
+  color: #dcf1c3;
+}
+.signup-steps .reached > span {
+  color: #203218;
+  background: var(--lime);
+  border-color: var(--lime);
+}
+.signup-fields {
+  display: grid;
+  gap: 13px;
+}
+.signup-fields label {
+  display: grid;
+  gap: 7px;
+  font-size: 14px;
+  color: #c4d2dd;
+}
+.signup-fields input {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid #425b6e;
+  border-radius: 10px;
+  background: #203445;
+  color: #e4ecf2;
+  padding: 12px;
+  font-size: 16px;
+}
+.signup-secondary {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 7px;
+  width: 100%;
+  border: 1px solid #638348;
+  border-radius: 10px;
+  color: #d8efb8;
+  background: #2c4436;
+  padding: 12px;
+  margin-top: 14px;
+  font-size: 14px;
+}
+.signup-secondary:disabled {
+  opacity: 0.7;
+  cursor: default;
+}
+.proof-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  color: #eef5fb;
+  font-size: 16px;
+}
+.student-proof p {
+  color: #b2c4d2;
+  font-size: 14px;
+  line-height: 1.8;
+  margin-top: 15px;
+}
+.student-proof dl {
+  margin-top: 18px;
+  display: grid;
+  gap: 12px;
+  font-size: 14px;
+}
+.student-proof dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.student-proof dt {
+  color: #9db2c1;
+}
+.student-proof dd {
+  color: #e5edf3;
+  text-align: right;
+}
+.verification-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 14px 0 0;
+  color: #b6c8d7;
+  font-size: 14px;
+  line-height: 1.7;
+}
+.verification-status svg {
+  flex-shrink: 0;
+}
+.verification-status.verified {
+  color: #c3eca0;
+}
+.verification-status.rejected {
+  color: #ffb6a9;
+}
 .auth-screen h2 {
   font-size: 29px;
   font-weight: 650;

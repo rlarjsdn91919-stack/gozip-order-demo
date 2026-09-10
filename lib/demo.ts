@@ -182,3 +182,11 @@ export function orderDisplay(status: OrderStatus) {
         : '실제 결제 없이 주문 흐름만 체험합니다.',
   };
 }
+
+export function canCompleteSignup(
+  phoneVerified: boolean,
+  termsAccepted: boolean,
+  studentCard: string,
+) {
+  return phoneVerified && termsAccepted && studentCard === 'verified';
+}
