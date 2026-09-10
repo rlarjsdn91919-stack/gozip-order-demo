@@ -33,7 +33,13 @@ import {
   Gift,
   LoaderCircle,
   Info,
+  CalendarDays,
+  Upload,
+  ScanText,
+  PencilLine,
+  Save,
 } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectTrigger,
@@ -121,6 +127,37 @@ type Phase =
   | 'authError'
   | 'receipt';
 type ActivityEvent = { title: string; detail: string; time: string };
+type TimetableStep = 'upload' | 'reading' | 'review' | 'done';
+type TimetableCourse = {
+  id: number;
+  name: string;
+  days: string;
+  time: string;
+  room: string;
+};
+const SAMPLE_TIMETABLE: TimetableCourse[] = [
+  {
+    id: 1,
+    name: '데이터베이스',
+    days: '월·수',
+    time: '10:30–11:45',
+    room: '제3공학관 201호',
+  },
+  {
+    id: 2,
+    name: '마케팅원론',
+    days: '화·목',
+    time: '13:00–14:15',
+    room: '경상관 305호',
+  },
+  {
+    id: 3,
+    name: 'UX 디자인',
+    days: '금',
+    time: '09:00–11:45',
+    room: '디자인문화관 401호',
+  },
+];
 const timeNow = () =>
   new Date().toLocaleTimeString('ko-KR', {
     hour: '2-digit',
@@ -215,6 +252,11 @@ export default function Home() {
   const [checkout, setCheckout] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
   const [infoOpen, setInfoOpen] = useState(false);
+  const [timetableOpen, setTimetableOpen] = useState(false);
+  const [timetableStep, setTimetableStep] = useState<TimetableStep>('upload');
+  const [timetableFile, setTimetableFile] = useState('');
+  const [timetableCourses, setTimetableCourses] =
+    useState<TimetableCourse[]>(SAMPLE_TIMETABLE);
   const [pendingVisit, setPendingVisit] = useState<{
     store: string;
     browser: string;
@@ -226,6 +268,7 @@ export default function Home() {
   const [notice, setNotice] = useState('');
   const [events, setEvents] = useState<ActivityEvent[]>([]);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const ocrTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const orderLock = useRef(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inApp = [
@@ -254,6 +297,7 @@ export default function Home() {
   useEffect(() => {
     return () => {
       if (timer.current) clearTimeout(timer.current);
+      if (ocrTimer.current) clearTimeout(ocrTimer.current);
     };
   }, []);
   useEffect(() => {
@@ -472,6 +516,37 @@ export default function Home() {
     setResetOpen(false);
     newVisit('0', 'Chrome');
     setEvents([]);
+    setTimetableOpen(false);
+    setTimetableStep('upload');
+    setTimetableFile('');
+    setTimetableCourses(SAMPLE_TIMETABLE);
+  }
+  function startTimetableOcr(fileName = '에브리타임_시간표.png') {
+    if (ocrTimer.current) clearTimeout(ocrTimer.current);
+    setTimetableFile(fileName);
+    setTimetableStep('reading');
+    ocrTimer.current = setTimeout(() => {
+      setTimetableCourses(SAMPLE_TIMETABLE.map((course) => ({ ...course })));
+      setTimetableStep('review');
+    }, 900);
+  }
+  function updateTimetableCourse(
+    id: number,
+    field: keyof Omit<TimetableCourse, 'id'>,
+    value: string,
+  ) {
+    setTimetableCourses((courses) =>
+      courses.map((course) =>
+        course.id === id ? { ...course, [field]: value } : course,
+      ),
+    );
+  }
+  function saveTimetable() {
+    setTimetableStep('done');
+    log(
+      '시간표를 저장했어요',
+      `스크린샷 OCR 결과 · ${timetableCourses.length}개 수업`,
+    );
   }
   const visibleOrders = storeOrders.filter((o) =>
     posTab === 'done'
@@ -493,6 +568,13 @@ export default function Home() {
           INTERACTIVE DEMO
         </div>
         <div className="header-actions">
+          <button
+            className="text-button timetable-button"
+            onClick={() => setTimetableOpen(true)}
+          >
+            <CalendarDays size={17} />
+            <span>시간표 가져오기</span>
+          </button>
           <button
             className="text-button info-button"
             onClick={() => setInfoOpen(true)}
@@ -1819,6 +1901,10 @@ export default function Home() {
               <Check size={17} />
               무료 서비스 메뉴 선택과 POS 처리
             </li>
+            <li>
+              <Check size={17} />
+              시간표 스크린샷 OCR·확인·저장
+            </li>
           </ul>
           <p className="info-disclaimer">
             NFC·QR, 앱 전환, Face ID, 서버 승인, POS는 모두 같은 웹페이지 안에서
@@ -1836,6 +1922,205 @@ export default function Home() {
             음식 사진: cottonbro studio / Pexels
             <ArrowUpRight size={13} />
           </a>
+        </DialogContent>
+      </Dialog>
+      <Dialog
+        open={timetableOpen}
+        onOpenChange={(open) => {
+          setTimetableOpen(open);
+          if (!open && timetableStep === 'reading') {
+            if (ocrTimer.current) clearTimeout(ocrTimer.current);
+            setTimetableStep('upload');
+          }
+        }}
+      >
+        <DialogContent className="timetable-dialog">
+          <div className="timetable-heading">
+            <span className="timetable-heading-icon">
+              <CalendarDays size={22} />
+            </span>
+            <div>
+              <DialogTitle className="dialog-title">
+                시간표 가져오기
+              </DialogTitle>
+              <DialogDescription>
+                에브리타임 시간표 스크린샷을 수업 정보로 바꿔드려요.
+              </DialogDescription>
+            </div>
+          </div>
+
+          {timetableStep === 'upload' && (
+            <div className="timetable-upload-step">
+              <label className="timetable-dropzone">
+                <input
+                  type="file"
+                  accept="image/png,image/jpeg,image/webp"
+                  onChange={(event) => {
+                    const file = event.target.files?.[0];
+                    if (file) startTimetableOcr(file.name);
+                    event.currentTarget.value = '';
+                  }}
+                />
+                <span className="upload-symbol">
+                  <Upload size={24} />
+                </span>
+                <strong>시간표 스크린샷 선택</strong>
+                <span>PNG, JPG, WEBP</span>
+              </label>
+              <button
+                className="secondary-button centered timetable-sample-button"
+                onClick={() => startTimetableOcr()}
+              >
+                <ScanText size={17} />
+                샘플 이미지로 체험
+              </button>
+              <p className="timetable-demo-note">
+                데모에서는 이미지를 서버에 전송하지 않고 샘플 인식 결과를
+                보여줍니다.
+              </p>
+            </div>
+          )}
+
+          {timetableStep === 'reading' && (
+            <div className="timetable-reading" aria-live="polite">
+              <span className="ocr-scanner">
+                <ScanText size={31} />
+                <i />
+              </span>
+              <strong>수업 정보를 읽고 있어요</strong>
+              <p>{timetableFile}</p>
+              <div className="ocr-progress" aria-hidden="true">
+                <span />
+              </div>
+            </div>
+          )}
+
+          {timetableStep === 'review' && (
+            <div className="timetable-review">
+              <div className="review-summary">
+                <div>
+                  <strong>{timetableCourses.length}개 수업을 찾았어요</strong>
+                  <span>잘못 읽힌 내용이 있으면 바로 수정하세요.</span>
+                </div>
+                <PencilLine size={18} />
+              </div>
+              <div className="course-editor-list">
+                {timetableCourses.map((course) => (
+                  <fieldset className="course-editor" key={course.id}>
+                    <legend>수업 {course.id}</legend>
+                    <label
+                      className="course-name-field"
+                      htmlFor={`course-${course.id}-name`}
+                    >
+                      <span>과목명</span>
+                      <Input
+                        id={`course-${course.id}-name`}
+                        value={course.name}
+                        onChange={(event) =>
+                          updateTimetableCourse(
+                            course.id,
+                            'name',
+                            event.target.value,
+                          )
+                        }
+                      />
+                    </label>
+                    <label htmlFor={`course-${course.id}-days`}>
+                      <span>요일</span>
+                      <Input
+                        id={`course-${course.id}-days`}
+                        value={course.days}
+                        onChange={(event) =>
+                          updateTimetableCourse(
+                            course.id,
+                            'days',
+                            event.target.value,
+                          )
+                        }
+                      />
+                    </label>
+                    <label htmlFor={`course-${course.id}-time`}>
+                      <span>시간</span>
+                      <Input
+                        id={`course-${course.id}-time`}
+                        value={course.time}
+                        onChange={(event) =>
+                          updateTimetableCourse(
+                            course.id,
+                            'time',
+                            event.target.value,
+                          )
+                        }
+                      />
+                    </label>
+                    <label htmlFor={`course-${course.id}-room`}>
+                      <span>강의실</span>
+                      <Input
+                        id={`course-${course.id}-room`}
+                        value={course.room}
+                        onChange={(event) =>
+                          updateTimetableCourse(
+                            course.id,
+                            'room',
+                            event.target.value,
+                          )
+                        }
+                      />
+                    </label>
+                  </fieldset>
+                ))}
+              </div>
+              <button
+                className="primary-button centered"
+                onClick={saveTimetable}
+                disabled={timetableCourses.some(
+                  (course) =>
+                    !course.name.trim() ||
+                    !course.days.trim() ||
+                    !course.time.trim(),
+                )}
+              >
+                <Save size={18} />
+                확인하고 저장
+              </button>
+            </div>
+          )}
+
+          {timetableStep === 'done' && (
+            <div className="timetable-done">
+              <span className="timetable-done-icon">
+                <Check size={27} />
+              </span>
+              <strong>{timetableCourses.length}개 수업을 저장했어요</strong>
+              <p>이제 캠퍼스 일정과 매장 혜택을 함께 확인할 수 있어요.</p>
+              <div className="saved-course-list">
+                {timetableCourses.map((course) => (
+                  <div key={course.id}>
+                    <span>{course.days}</span>
+                    <div>
+                      <strong>{course.name}</strong>
+                      <small>
+                        {course.time} · {course.room}
+                      </small>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <button
+                className="primary-button centered"
+                onClick={() => setTimetableOpen(false)}
+              >
+                주문 화면으로 돌아가기
+                <ArrowRight size={18} />
+              </button>
+              <button
+                className="timetable-retry"
+                onClick={() => setTimetableStep('upload')}
+              >
+                다른 스크린샷 가져오기
+              </button>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </main>
