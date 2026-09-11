@@ -2668,7 +2668,7 @@ h1 > span {
 /* Place-detail theme: white surfaces, green actions, compact information rows. */
 :root,
 .dark {
-  --background: #2c2b2b;
+  --background: #1f1e1e;
   --foreground: #242424;
   --card: #fff;
   --primary: #d81b60;
@@ -3249,10 +3249,10 @@ h1 > span {
   }
 }
 
-/* Backboard: dark #2c2b2b behind the white panels; text sitting directly on it is white. */
+/* Backboard: dark #1f1e1e behind the white panels; text sitting directly on it is white. */
 /* Key color: neon pink #ff2d78 paired with coral #ff4a2e; deep #d81b60 carries text on white panels. */
 .masthead {
-  border-bottom-color: #454242;
+  border-bottom-color: #353232;
 }
 .wordmark,
 .workspace-heading h1,
@@ -3266,7 +3266,7 @@ h1 > span {
   color: rgb(255 255 255 / 0.78);
 }
 .masthead .text-button:hover {
-  background: #3a3838;
+  background: #2e2c2c;
   color: #fff;
 }
 .demo-disclaimer > span,
@@ -3278,7 +3278,7 @@ h1 > span {
   color: rgb(255 255 255 / 0.62);
 }
 .site-footer {
-  border-top-color: #454242;
+  border-top-color: #353232;
   color: rgb(255 255 255 / 0.62);
 }
 .brand-icon {
@@ -3365,4 +3365,85 @@ h1 > span {
   .workspace-heading h1 > span {
     color: color(display-p3 1 0.3 0.18);
   }
+}
+/* Interface guidelines: dark chrome with light panels, touch, numerals, scroll containment, focus. */
+html {
+  color-scheme: dark;
+}
+.journey,
+.scenario-controls,
+.phone-frame,
+.pos-frame,
+.flow-note,
+[data-slot='dialog-content'],
+[data-slot='alert-dialog-content'],
+[data-slot='select-content'] {
+  color-scheme: light;
+}
+button,
+a,
+label,
+input,
+textarea,
+[role='tab'] {
+  touch-action: manipulation;
+}
+h1,
+h2,
+h3 {
+  text-wrap: balance;
+}
+.step-number,
+.pos-count strong,
+.pos-filter b,
+.quantity-control span,
+.menu-item strong,
+.checkout-item span,
+.checkout-summary strong,
+.receipt-line strong,
+.receipt-total strong,
+.order-card-items,
+.order-card-total strong,
+.activity-item > span:last-child {
+  font-variant-numeric: tabular-nums;
+}
+.phone-scroll,
+.checkout-scroll,
+[data-slot='dialog-content'],
+[data-slot='alert-dialog-content'] {
+  overscroll-behavior: contain;
+}
+.timetable-dropzone:focus-within {
+  outline: 3px solid #d81b60;
+  outline-offset: 3px;
+}
+.timetable-reading p {
+  overflow-wrap: anywhere;
+}
+.revisit-shortcut:hover,
+.photo-credit:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.checkout-benefit:hover:not(:disabled),
+.signup-secondary:hover:not(:disabled) {
+  background: #f8e3ea;
+}
+#merchant-pos {
+  scroll-margin-top: 16px;
+}
+.skip-link {
+  position: absolute;
+  left: 16px;
+  top: -48px;
+  z-index: 100;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #fff;
+  color: #1f1e1e;
+  font-size: 14px;
+  font-weight: 700;
+}
+.skip-link:focus-visible {
+  top: 16px;
 }

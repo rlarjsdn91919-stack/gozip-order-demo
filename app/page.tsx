@@ -251,12 +251,14 @@ export default function Home() {
   const [busy, setBusy] = useState(false);
   const [checkout, setCheckout] = useState(false);
   const [resetOpen, setResetOpen] = useState(false);
+  const [cancelTarget, setCancelTarget] = useState<string | null>(null);
   const [infoOpen, setInfoOpen] = useState(false);
   const [timetableOpen, setTimetableOpen] = useState(false);
   const [timetableStep, setTimetableStep] = useState<TimetableStep>('upload');
   const [timetableFile, setTimetableFile] = useState('');
   const [timetableCourses, setTimetableCourses] =
     useState<TimetableCourse[]>(SAMPLE_TIMETABLE);
+  const [timetableError, setTimetableError] = useState('');
   const [pendingVisit, setPendingVisit] = useState<{
     store: string;
     browser: string;
@@ -493,6 +495,12 @@ export default function Home() {
       setNotice(
         error instanceof Error ? error.message : '주문을 확인해주세요.',
       );
+      if (benefitAvailable && !drink)
+        document
+          .querySelector<HTMLElement>(
+            ".checkout-dialog [data-slot='radio-group-item']",
+          )
+          ?.focus();
     }
   }
   function updateOrder(id: string, status: OrderStatus) {
@@ -524,6 +532,7 @@ export default function Home() {
   function startTimetableOcr(fileName = '에브리타임_시간표.png') {
     if (ocrTimer.current) clearTimeout(ocrTimer.current);
     setTimetableFile(fileName);
+    setTimetableError('');
     setTimetableStep('reading');
     ocrTimer.current = setTimeout(() => {
       setTimetableCourses(SAMPLE_TIMETABLE.map((course) => ({ ...course })));
@@ -535,6 +544,7 @@ export default function Home() {
     field: keyof Omit<TimetableCourse, 'id'>,
     value: string,
   ) {
+    setTimetableError('');
     setTimetableCourses((courses) =>
       courses.map((course) =>
         course.id === id ? { ...course, [field]: value } : course,
@@ -542,6 +552,24 @@ export default function Home() {
     );
   }
   function saveTimetable() {
+    const labels = { name: '과목명', days: '요일', time: '시간' } as const;
+    const missing = timetableCourses
+      .flatMap((course) =>
+        (Object.keys(labels) as (keyof typeof labels)[]).map((field) => ({
+          course,
+          field,
+        })),
+      )
+      .find(({ course, field }) => !course[field].trim());
+    if (missing) {
+      setTimetableError(
+        `수업 ${missing.course.id}의 ${labels[missing.field]}을 입력해주세요.`,
+      );
+      document
+        .getElementById(`course-${missing.course.id}-${missing.field}`)
+        ?.focus();
+      return;
+    }
     setTimetableStep('done');
     log(
       '시간표를 저장했어요',
@@ -556,8 +584,11 @@ export default function Home() {
 
   return (
     <main className="demo-shell">
+      <a className="skip-link" href="#workspace">
+        체험 화면으로 건너뛰기
+      </a>
       <header className="masthead">
-        <Link href="/" className="wordmark">
+        <Link href="/" className="wordmark" translate="no">
           <span className="brand-icon">
             <Link2 size={23} />
           </span>
@@ -635,7 +666,7 @@ export default function Home() {
       <div className="mobile-demo-note">
         데모 · 실제 앱/Face ID/POS를 연결하지 않습니다.
       </div>
-      <div className="workspace-grid">
+      <div className="workspace-grid" id="workspace">
         <section className="customer-column" aria-label="고객 주문 화면">
           <div className="panel-label">
             <span>
@@ -703,7 +734,7 @@ export default function Home() {
                 >
                   <ChevronLeft size={19} />
                 </button>
-                <span>
+                <span translate="no">
                   <Link2 size={16} />
                   Go.zip
                 </span>
@@ -724,6 +755,7 @@ export default function Home() {
                 <div className="tag-screen">
                   <div className="tag-photo">
                     <Image
+                      priority
                       unoptimized
                       width={1200}
                       height={1800}
@@ -916,7 +948,7 @@ export default function Home() {
                           <ScanLine size={54} />
                         )}
                         <span>
-                          {busy ? '학생증 인식 중' : '학생증 촬영 영역'}
+                          {busy ? '학생증 인식 중…' : '학생증 촬영 영역'}
                         </span>
                       </div>
                       <h2 className="capture-title">학생증을 찍어주세요</h2>
@@ -926,7 +958,7 @@ export default function Home() {
                           disabled={busy}
                           onClick={checkStudentCard}
                         >
-                          {busy ? '학교 정보를 읽고 있어요' : '학생증 촬영하기'}
+                          {busy ? '학교 정보를 읽고 있어요…' : '학생증 촬영하기'}
                           <ScanLine size={18} />
                         </button>
                         <button
@@ -1040,6 +1072,7 @@ export default function Home() {
                             value={otp}
                             onChange={setOtp}
                             inputMode="numeric"
+                            name="otp"
                             autoComplete="one-time-code"
                             aria-label="SMS 인증번호 6자리"
                             containerClassName="otp-input"
@@ -1139,7 +1172,7 @@ export default function Home() {
                               onClick={() => approve()}
                             >
                               {busy
-                                ? '제휴 연결 승인 중'
+                                ? '제휴 연결 승인 중…'
                                 : '제휴 연결 승인하기'}
                               <ArrowRight size={18} />
                             </button>
@@ -1189,7 +1222,7 @@ export default function Home() {
                           {busy ? (
                             <>
                               <LoaderCircle size={19} className="spin" />
-                              승인 확인 중
+                              승인 확인 중…
                             </>
                           ) : (
                             <>
@@ -1282,7 +1315,7 @@ export default function Home() {
                   )}
                   <div className="auth-bottom-brand">
                     <LockKeyhole size={12} />
-                    Go.zip · 제휴 승인 시뮬레이션
+                    <span translate="no">Go.zip</span> · 제휴 승인 시뮬레이션
                   </div>
                 </div>
               )}
@@ -1382,7 +1415,14 @@ export default function Home() {
                     onClick={() =>
                       document
                         .getElementById('merchant-pos')
-                        ?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+                        ?.scrollIntoView({
+                          behavior: window.matchMedia(
+                            '(prefers-reduced-motion: reduce)',
+                          ).matches
+                            ? 'auto'
+                            : 'smooth',
+                          block: 'start',
+                        })
                     }
                   >
                     <Monitor size={17} />
@@ -1464,7 +1504,7 @@ export default function Home() {
           <div className="pos-frame">
             <div className="pos-topbar">
               <div>
-                <span className="pos-brand">
+                <span className="pos-brand" translate="no">
                   Go.zip<span>POS</span>
                 </span>
                 <span className="pos-divider" />
@@ -1603,9 +1643,7 @@ export default function Home() {
                                 <>
                                   <button
                                     className="pos-reject"
-                                    onClick={() =>
-                                      updateOrder(order.id, 'cancelled')
-                                    }
+                                    onClick={() => setCancelTarget(order.id)}
                                   >
                                     주문 취소
                                   </button>
@@ -1705,7 +1743,7 @@ export default function Home() {
         </section>
       </div>
       <footer className="site-footer">
-        <span>Go.zip / ORDER EXPERIENCE</span>
+        <span translate="no">Go.zip / ORDER EXPERIENCE</span>
         <span>가상 매장·가상 회원으로 체험합니다.</span>
       </footer>
       <Dialog
@@ -1774,7 +1812,9 @@ export default function Home() {
             </label>
             <textarea
               id="order-note"
-              placeholder="예: 덜 맵게 해주세요"
+              name="note"
+              autoComplete="off"
+              placeholder="예: 덜 맵게 해주세요…"
               value={note}
               onChange={(e) => setNote(e.target.value)}
               maxLength={100}
@@ -1798,12 +1838,12 @@ export default function Home() {
           <button
             className="primary-button centered"
             onClick={submitOrder}
-            disabled={!itemCount(cart) || busy || (benefitAvailable && !drink)}
+            disabled={!itemCount(cart) || busy}
           >
             {busy ? (
               <>
                 <LoaderCircle size={18} className="spin" />
-                POS로 주문 전달 중
+                POS로 주문 전달 중…
               </>
             ) : (
               <>
@@ -1854,6 +1894,37 @@ export default function Home() {
             onClick={() => setPendingVisit(null)}
           >
             현재 주문 유지하기
+          </button>
+        </AlertDialogContent>
+      </AlertDialog>
+      <AlertDialog
+        open={!!cancelTarget}
+        onOpenChange={(open) => {
+          if (!open) setCancelTarget(null);
+        }}
+      >
+        <AlertDialogContent>
+          <AlertDialogTitle className="dialog-title">
+            주문을 취소할까요?
+          </AlertDialogTitle>
+          <AlertDialogDescription>
+            #{cancelTarget} 주문이 취소되고 고객 화면에도 취소로 표시됩니다.
+          </AlertDialogDescription>
+          <button
+            className="primary-button centered"
+            onClick={() => {
+              if (cancelTarget) updateOrder(cancelTarget, 'cancelled');
+              setCancelTarget(null);
+            }}
+          >
+            <X size={17} />
+            주문 취소
+          </button>
+          <button
+            className="secondary-button centered"
+            onClick={() => setCancelTarget(null)}
+          >
+            주문 유지하기
           </button>
         </AlertDialogContent>
       </AlertDialog>
@@ -1986,7 +2057,7 @@ export default function Home() {
                 <ScanText size={31} />
                 <i />
               </span>
-              <strong>수업 정보를 읽고 있어요</strong>
+              <strong>수업 정보를 읽고 있어요…</strong>
               <p>{timetableFile}</p>
               <div className="ocr-progress" aria-hidden="true">
                 <span />
@@ -2014,6 +2085,8 @@ export default function Home() {
                       <span>과목명</span>
                       <Input
                         id={`course-${course.id}-name`}
+                        name={`course-${course.id}-name`}
+                        autoComplete="off"
                         value={course.name}
                         onChange={(event) =>
                           updateTimetableCourse(
@@ -2028,6 +2101,8 @@ export default function Home() {
                       <span>요일</span>
                       <Input
                         id={`course-${course.id}-days`}
+                        name={`course-${course.id}-days`}
+                        autoComplete="off"
                         value={course.days}
                         onChange={(event) =>
                           updateTimetableCourse(
@@ -2042,6 +2117,8 @@ export default function Home() {
                       <span>시간</span>
                       <Input
                         id={`course-${course.id}-time`}
+                        name={`course-${course.id}-time`}
+                        autoComplete="off"
                         value={course.time}
                         onChange={(event) =>
                           updateTimetableCourse(
@@ -2056,6 +2133,8 @@ export default function Home() {
                       <span>강의실</span>
                       <Input
                         id={`course-${course.id}-room`}
+                        name={`course-${course.id}-room`}
+                        autoComplete="off"
                         value={course.room}
                         onChange={(event) =>
                           updateTimetableCourse(
@@ -2069,15 +2148,14 @@ export default function Home() {
                   </fieldset>
                 ))}
               </div>
+              {timetableError && (
+                <p className="inline-notice" role="alert">
+                  {timetableError}
+                </p>
+              )}
               <button
                 className="primary-button centered"
                 onClick={saveTimetable}
-                disabled={timetableCourses.some(
-                  (course) =>
-                    !course.name.trim() ||
-                    !course.days.trim() ||
-                    !course.time.trim(),
-                )}
               >
                 <Save size={18} />
                 확인하고 저장
