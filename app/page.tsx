@@ -745,7 +745,7 @@ export default function Home() {
                 <ChevronLeft size={16} />
                 <span>
                   <LockKeyhole size={12} />
-                  order.gozip.demo
+                  go.zip.order
                 </span>
                 <Globe size={16} />
               </div>
