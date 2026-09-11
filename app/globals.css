@@ -3447,3 +3447,255 @@ h3 {
 .skip-link:focus-visible {
   top: 16px;
 }
+
+/* Requested contrast: white page backboard with a black customer phone UI. */
+:root,
+.dark {
+  --background: #ffffff;
+}
+html {
+  color-scheme: light;
+}
+body {
+  background: #ffffff;
+}
+.masthead {
+  border-bottom-color: #e5e7eb;
+}
+.wordmark,
+.workspace-heading h1,
+.panel-label,
+.activity-title h3,
+.activity-item strong {
+  color: #1f1f1f;
+}
+.masthead .text-button,
+.demo-disclaimer {
+  color: #555b61;
+}
+.masthead .text-button:hover {
+  background: #f1f3f5;
+  color: #1f1f1f;
+}
+.demo-disclaimer > span,
+.panel-label .caption,
+.activity-title > span,
+.activity-item p,
+.activity-item > span:last-child,
+.mobile-demo-note {
+  color: #767b80;
+}
+.site-footer {
+  border-top-color: #e5e7eb;
+  color: #7c8288;
+}
+
+.phone-frame,
+.phone-frame.app-mode {
+  color-scheme: dark;
+  background: #080808;
+  color: #f5f5f5;
+  border-color: #262626;
+  box-shadow:
+    0 18px 55px rgb(0 0 0 / 0.18),
+    0 2px 8px rgb(0 0 0 / 0.12);
+}
+.phone-status,
+.browser-bar,
+.browser-bar > span,
+.tag-content,
+.menu-body,
+.phone-footer,
+.app-mode,
+.app-mode .phone-status,
+.app-mode .phone-footer,
+.app-topbar,
+.auth-screen,
+.receipt-screen {
+  background: #080808;
+  color: #f5f5f5;
+}
+.phone-status,
+.app-mode .phone-status {
+  color: #f5f5f5;
+}
+.island,
+.app-mode .island {
+  background: #2a2a2a;
+}
+.browser-bar,
+.app-topbar,
+.phone-footer,
+.app-mode .phone-footer {
+  border-color: #242424;
+}
+.browser-bar {
+  color: #b7b7b7;
+}
+.browser-bar > span {
+  border-color: #303030;
+}
+.restaurant-hero {
+  background: #080808;
+  border-bottom-color: #1a1a1a;
+}
+.restaurant-name,
+.restaurant-name h2,
+.tag-content h2,
+.menu-title h3,
+.menu-item strong,
+.auth-screen h2,
+.proof-title,
+.student-proof dd,
+.receipt-screen h2,
+.receipt-paper strong,
+.member-card strong,
+.university-card strong,
+.return-card strong {
+  color: #f7f7f7;
+}
+.restaurant-name p,
+.tag-content > p:not(.eyebrow),
+.tag-card span,
+.tag-login-note,
+.phone-footer-note,
+.menu-item p,
+.auth-description,
+.auth-context,
+.student-proof p,
+.student-proof dt,
+.verification-status,
+.member-card p,
+.member-card strong > span,
+.university-card div > span,
+.return-card span,
+.simulation-caption,
+.auth-bottom-brand,
+.app-mode .phone-footer-note,
+.receipt-paper p {
+  color: #9d9d9d;
+}
+.menu-tabs {
+  border-bottom-color: #292929;
+}
+.menu-tabs [data-slot='tabs-trigger'] {
+  color: #8f8f8f;
+}
+.menu-tabs [data-slot='tabs-trigger'][data-active] {
+  color: #ff4b8c;
+}
+.menu-item {
+  border-bottom-color: #242424;
+}
+.quantity-control button {
+  color: #ff4b8c;
+  background: #151515;
+  border-color: #353535;
+}
+.quantity-control button:hover {
+  background: #25131a;
+}
+.benefit-banner,
+.connected-banner,
+.drink-box,
+.inline-notice {
+  background: #1d1015;
+  border-color: #482232;
+}
+.benefit-banner strong,
+.connected-banner strong,
+.drink-heading strong {
+  color: #f7f7f7;
+}
+.benefit-banner small,
+.benefit-banner > svg,
+.connected-banner small,
+.connected-banner > svg,
+.inline-notice,
+.drink-heading,
+.drink-heading > span,
+.drink-option b {
+  color: #ff6aa0;
+}
+.benefit-icon {
+  background: #351621;
+  color: #ff6aa0;
+}
+.drink-option {
+  background: #111;
+  border-color: #333;
+  color: #f5f5f5;
+}
+.drink-option.selected {
+  background: #2a111b;
+  border-color: #ff2d78;
+}
+.drink-box > p,
+.eligibility-note {
+  color: #999;
+}
+.signup-summary,
+.student-proof,
+.member-card,
+.university-card,
+.return-card {
+  background: #141414;
+  border-color: #333;
+  color: #f5f5f5;
+}
+.auth-symbol,
+.member-avatar,
+.app-demo-label,
+.school-badge {
+  background: #2a111b;
+  border-color: #482232;
+  color: #ff6aa0;
+}
+.signup-fields label,
+.consent-row {
+  color: #d7d7d7;
+}
+.signup-fields input,
+.phone-entry,
+.otp-input [data-slot='input-otp-slot'] {
+  background: #141414;
+  color: #f7f7f7;
+  border-color: #383838 !important;
+}
+.phone-entry span,
+.consent-row small {
+  color: #999;
+}
+.consent-row [data-slot='checkbox'] {
+  background: #171717;
+  border-color: #666;
+}
+.capture-viewfinder {
+  background: linear-gradient(145deg, #171012, #101010);
+  color: #ff5b96;
+  box-shadow: inset 0 0 0 10px #0c0c0c;
+}
+.ocr-result {
+  border-color: #333;
+}
+.ocr-result > div {
+  border-bottom-color: #292929;
+}
+.ocr-result span {
+  color: #999;
+}
+.ocr-result strong {
+  color: #f5f5f5;
+}
+.receipt-paper {
+  background: #141414;
+  border-color: #333;
+  color: #f5f5f5;
+}
+.receipt-total strong {
+  color: #f7f7f7;
+}
+.home-indicator,
+.app-mode .home-indicator {
+  background: #d9d9d9;
+}
