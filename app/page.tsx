@@ -140,21 +140,21 @@ const SAMPLE_TIMETABLE: TimetableCourse[] = [
     id: 1,
     name: '데이터베이스',
     days: '월·수',
-    time: '10:30–11:45',
+    time: '10:30-11:45',
     room: '제3공학관 201호',
   },
   {
     id: 2,
     name: '마케팅원론',
     days: '화·목',
-    time: '13:00–14:15',
+    time: '13:00-14:15',
     room: '경상관 305호',
   },
   {
     id: 3,
     name: 'UX 디자인',
     days: '금',
-    time: '09:00–11:45',
+    time: '09:00-11:45',
     room: '디자인문화관 401호',
   },
 ];
@@ -564,7 +564,6 @@ export default function Home() {
           Go<span className="brand-light">.zip</span>
         </Link>
         <div className="demo-badge">
-          <span />
           INTERACTIVE DEMO
         </div>
         <div className="header-actions">
