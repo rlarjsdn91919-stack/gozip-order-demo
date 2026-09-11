@@ -1,4 +1,4 @@
-# Campus Link Order Demo
+# 고집(Go.zip) Order Demo
 
 대학교 제휴 인증을 웹 주문에 연결하는 전체 흐름을 체험할 수 있는 인터랙티브 데모입니다.
 

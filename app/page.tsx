@@ -561,7 +561,7 @@ export default function Home() {
           <span className="brand-icon">
             <Link2 size={23} />
           </span>
-          CAMPUS<span className="brand-light">LINK</span>
+          Go<span className="brand-light">.zip</span>
         </Link>
         <div className="demo-badge">
           <span />
@@ -590,7 +590,7 @@ export default function Home() {
       </header>
       <div className="workspace-heading">
         <div>
-          <p className="eyebrow">캠퍼스링크 · 매장 주문</p>
+          <p className="eyebrow">고집 · 매장 주문</p>
           <h1>
             웹 주문부터 매장 접수까지<span>.</span>
           </h1>
@@ -706,7 +706,7 @@ export default function Home() {
                 </button>
                 <span>
                   <Link2 size={16} />
-                  CAMPUS LINK
+                  Go.zip
                 </span>
                 <span className="app-demo-label">회원가입 웹</span>
               </div>
@@ -715,7 +715,7 @@ export default function Home() {
                 <ChevronLeft size={16} />
                 <span>
                   <LockKeyhole size={12} />
-                  order.campuslink.demo
+                  order.gozip.demo
                 </span>
                 <Globe size={16} />
               </div>
@@ -1283,7 +1283,7 @@ export default function Home() {
                   )}
                   <div className="auth-bottom-brand">
                     <LockKeyhole size={12} />
-                    CAMPUS LINK · 제휴 승인 시뮬레이션
+                    Go.zip · 제휴 승인 시뮬레이션
                   </div>
                 </div>
               )}
@@ -1414,7 +1414,7 @@ export default function Home() {
               ) : (
                 <div className="phone-footer-note">
                   {inApp
-                    ? 'CAMPUS LINK 회원가입 웹페이지입니다.'
+                    ? 'Go.zip 회원가입 웹페이지입니다.'
                     : phase === 'receipt'
                       ? '주문은 웹에서 완료됐어요.'
                       : 'NFC·QR을 통해 웹 주문을 시작하세요.'}
@@ -1466,7 +1466,7 @@ export default function Home() {
             <div className="pos-topbar">
               <div>
                 <span className="pos-brand">
-                  CL<span>POS</span>
+                  Go.zip<span>POS</span>
                 </span>
                 <span className="pos-divider" />
                 {selectedStore}
@@ -1706,7 +1706,7 @@ export default function Home() {
         </section>
       </div>
       <footer className="site-footer">
-        <span>CAMPUS LINK / ORDER EXPERIENCE</span>
+        <span>Go.zip / ORDER EXPERIENCE</span>
         <span>가상 매장·가상 회원으로 체험합니다.</span>
       </footer>
       <Dialog
