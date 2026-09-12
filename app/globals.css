@@ -3448,7 +3448,7 @@ h3 {
   top: 16px;
 }
 
-/* Requested contrast: white page backboard with a black customer phone UI. */
+/* Requested contrast: white page backboard, with the former dark backboard tone (#1f1e1e) moved onto the customer phone UI. */
 :root,
 .dark {
   --background: #ffffff;
@@ -3493,9 +3493,9 @@ body {
 .phone-frame,
 .phone-frame.app-mode {
   color-scheme: dark;
-  background: #080808;
+  background: #1f1e1e;
   color: #f5f5f5;
-  border-color: #262626;
+  border-color: #333131;
   box-shadow:
     0 18px 55px rgb(0 0 0 / 0.18),
     0 2px 8px rgb(0 0 0 / 0.12);
@@ -3512,7 +3512,7 @@ body {
 .app-topbar,
 .auth-screen,
 .receipt-screen {
-  background: #080808;
+  background: #1f1e1e;
   color: #f5f5f5;
 }
 .phone-status,
@@ -3521,23 +3521,23 @@ body {
 }
 .island,
 .app-mode .island {
-  background: #2a2a2a;
+  background: #3a3838;
 }
 .browser-bar,
 .app-topbar,
 .phone-footer,
 .app-mode .phone-footer {
-  border-color: #242424;
+  border-color: #333131;
 }
 .browser-bar {
   color: #b7b7b7;
 }
 .browser-bar > span {
-  border-color: #303030;
+  border-color: #3f3d3d;
 }
 .restaurant-hero {
-  background: #080808;
-  border-bottom-color: #1a1a1a;
+  background: #1f1e1e;
+  border-bottom-color: #2e2c2c;
 }
 .restaurant-name,
 .restaurant-name h2,
@@ -3576,7 +3576,7 @@ body {
   color: #9d9d9d;
 }
 .menu-tabs {
-  border-bottom-color: #292929;
+  border-bottom-color: #3a3838;
 }
 .menu-tabs [data-slot='tabs-trigger'] {
   color: #8f8f8f;
@@ -3585,21 +3585,21 @@ body {
   color: #ff4b8c;
 }
 .menu-item {
-  border-bottom-color: #242424;
+  border-bottom-color: #333131;
 }
-.quantity-control button {
+.phone-frame .quantity-control button {
   color: #ff4b8c;
-  background: #151515;
-  border-color: #353535;
+  background: #292727;
+  border-color: #444242;
 }
-.quantity-control button:hover {
-  background: #25131a;
+.phone-frame .quantity-control button:hover {
+  background: #33212a;
 }
 .benefit-banner,
 .connected-banner,
 .drink-box,
-.inline-notice {
-  background: #1d1015;
+.phone-frame .inline-notice {
+  background: #2e1e24;
   border-color: #482232;
 }
 .benefit-banner strong,
@@ -3611,23 +3611,23 @@ body {
 .benefit-banner > svg,
 .connected-banner small,
 .connected-banner > svg,
-.inline-notice,
+.phone-frame .inline-notice,
 .drink-heading,
 .drink-heading > span,
 .drink-option b {
   color: #ff6aa0;
 }
 .benefit-icon {
-  background: #351621;
+  background: #42242f;
   color: #ff6aa0;
 }
 .drink-option {
-  background: #111;
-  border-color: #333;
+  background: #292727;
+  border-color: #3f3d3d;
   color: #f5f5f5;
 }
 .drink-option.selected {
-  background: #2a111b;
+  background: #38202a;
   border-color: #ff2d78;
 }
 .drink-box > p,
@@ -3639,15 +3639,15 @@ body {
 .member-card,
 .university-card,
 .return-card {
-  background: #141414;
-  border-color: #333;
+  background: #292727;
+  border-color: #3f3d3d;
   color: #f5f5f5;
 }
 .auth-symbol,
 .member-avatar,
 .app-demo-label,
 .school-badge {
-  background: #2a111b;
+  background: #38202a;
   border-color: #482232;
   color: #ff6aa0;
 }
@@ -3658,28 +3658,28 @@ body {
 .signup-fields input,
 .phone-entry,
 .otp-input [data-slot='input-otp-slot'] {
-  background: #141414;
+  background: #292727;
   color: #f7f7f7;
-  border-color: #383838 !important;
+  border-color: #454343 !important;
 }
 .phone-entry span,
 .consent-row small {
   color: #999;
 }
 .consent-row [data-slot='checkbox'] {
-  background: #171717;
-  border-color: #666;
+  background: #2a2828;
+  border-color: #6b6868;
 }
 .capture-viewfinder {
-  background: linear-gradient(145deg, #171012, #101010);
+  background: linear-gradient(145deg, #2a1f22, #242323);
   color: #ff5b96;
-  box-shadow: inset 0 0 0 10px #0c0c0c;
+  box-shadow: inset 0 0 0 10px #232222;
 }
 .ocr-result {
-  border-color: #333;
+  border-color: #3f3d3d;
 }
 .ocr-result > div {
-  border-bottom-color: #292929;
+  border-bottom-color: #3a3838;
 }
 .ocr-result span {
   color: #999;
@@ -3688,8 +3688,8 @@ body {
   color: #f5f5f5;
 }
 .receipt-paper {
-  background: #141414;
-  border-color: #333;
+  background: #292727;
+  border-color: #3f3d3d;
   color: #f5f5f5;
 }
 .receipt-total strong {
